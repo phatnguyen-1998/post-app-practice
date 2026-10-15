@@ -1,0 +1,25 @@
+<mxfile host="Electron">
+  <diagram name="Trang-1" id="PCAvlExmcbrNh8zm_5mL">
+    <mxGraphModel dx="678" dy="593" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="e_jIXXfwqZYi4y9ikXXh-4" edge="1" parent="1" source="e_jIXXfwqZYi4y9ikXXh-1" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=ERzeroToMany;endFill=0;startArrow=ERmandOne;startFill=0;" target="e_jIXXfwqZYi4y9ikXXh-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_jIXXfwqZYi4y9ikXXh-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="users" vertex="1">
+          <mxGeometry height="60" width="120" x="340" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="e_jIXXfwqZYi4y9ikXXh-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="posts" vertex="1">
+          <mxGeometry height="60" width="120" x="220" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="e_jIXXfwqZYi4y9ikXXh-5" edge="1" parent="1" source="e_jIXXfwqZYi4y9ikXXh-3" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;startArrow=ERmandOne;startFill=0;endArrow=ERzeroToMany;endFill=0;" target="e_jIXXfwqZYi4y9ikXXh-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_jIXXfwqZYi4y9ikXXh-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="categories" vertex="1">
+          <mxGeometry height="60" width="120" x="110" y="120" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
