@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
         $yui = User::create(['name' => 'ゆい', 'email' => 'yui@example.com', 'password' => Hash::make('password')]);
         $kento = User::create(['name' => 'けんと', 'email' => 'kento@example.com', 'password' => Hash::make('password')]);
         $akari = User::create(['name' => 'あかり', 'email' => 'akari@example.com', 'password' => Hash::make('password')]);
+        $riku = User::create(['name' => 'りく', 'email' => 'riku@example.com', 'password' => Hash::make('password')]);
 
         // ポスト（古い順に定義し、created_at は現在からの経過時間で固定する）
         $posts = [
@@ -56,6 +57,7 @@ class DatabaseSeeder extends Seeder
             [$daichi, $notice, '勉強会やります', '来週の金曜、オンラインでLaravelのもくもく会をやります。初心者歓迎です。気軽にどうぞ。', 49],
             [$mio, $etc, '猫が邪魔をする', 'キーボードの上に乗ってくるのでペアプロの相手だと思うことにした。無言のレビュアー。', 41],
             [$sota, $notice, 'プロフィール画像の話', 'アイコンの色が名前で決まるの、地味に気に入っている。私はずっとこの色でいたい。', 36],
+            [$riku, $tech, 'リレーションの書き方', 'belongsTo と hasMany の向きでいつも迷う。外部キーを持っている側が belongsTo、と覚えたらスッキリした。', 30],
             [$yui, $etc, '早起きチャレンジ3日目', '3日続いた。えらい。ご褒美に少しいいパンを買った。明日も起きられるかは別の話。', 26],
             [$haruka, $tech, 'テストを先に書いてみた', '先にテストを書くと「何ができたら完成か」を先に決めることになるんだな。設計の練習にもなる気がする。', 20],
             [$kento, $etc, '夕焼けがすごかった', 'ベランダから見えた空が完全に優勝していた。写真では伝わらないやつ。', 13],
