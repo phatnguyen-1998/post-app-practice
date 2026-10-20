@@ -38,8 +38,11 @@ class PostController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'content' => 'required|string',
+            'content' => 'required|string|max:140',
             'category_id' => 'required|exists:categories,id',
+        ], [
+            'content.required' => '本文を入力してください。',
+            'content.max' => '本文は :max 文字以内で入力してください。',
         ]);
 
         $post->update($validated);
