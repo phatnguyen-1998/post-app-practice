@@ -103,4 +103,78 @@ class ReplyTest extends TestCase
 
         $this->assertDatabaseCount('replies', 0);
     }
+
+    public function test_本文が280字ちょうどなら保存できる(): void
+    {
+        $post = Post::factory()->create();
+        $content = str_repeat('あ', 280);
+
+        $this->actingAs(User::factory()->create())
+            ->post(route('replies.store', $post), ['content' => $content])
+            ->assertRedirect(route('posts.show', $post));
+
+        $this->assertDatabaseHas('replies', ['post_id' => $post->id, 'content' => $content]);
+    }
+
+    public function test_本文が281字だとエラーになり保存されない(): void
+    {
+        $post = Post::factory()->create();
+
+        $response = $this->actingAs(User::factory()->create())
+            ->from(route('posts.show', $post))
+            ->post(route('replies.store', $post), ['content' => str_repeat('あ', 281)]);
+
+        $response->assertRedirect(route('posts.show', $post));
+        $response->assertSessionHasErrors(['content' => 'The content field must not be greater than 280 characters.']);
+        $this->assertDatabaseCount('replies', 0);
+    }
+
+    public function test_ログインしていないとリプライを送れず消せない(): void
+    {
+        $post = Post::factory()->create();
+        $reply = Reply::factory()->for($post)->create();
+
+        $this->post(route('replies.store', $post), ['content' => 'こんにちは'])->assertRedirect('/login');
+        $this->delete(route('replies.destroy', $reply))->assertRedirect('/login');
+
+        $this->assertDatabaseCount('replies', 1);
+        $this->assertModelExists($reply);
+    }
+
+    public function test_存在しないポストにはリプライを送れない(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->post('/posts/999999/replies', ['content' => 'こんにちは'])
+            ->assertNotFound();
+
+        $this->assertDatabaseCount('replies', 0);
+    }
+
+    public function test_リプライが0件のポストでは空の案内が出る(): void
+    {
+        $post = Post::factory()->create();
+
+        $this->actingAs(User::factory()->create())
+            ->get(route('posts.show', $post))
+            ->assertOk()
+            ->assertSee('リプライ（0）')
+            ->assertSee('まだリプライがありません。');
+    }
+
+    public function test_一覧の編集と削除は本人のポストにだけ出て返信は誰のポストにも出る(): void
+    {
+        $user = User::factory()->create();
+        $mine = Post::factory()->for($user)->create();
+        $others = Post::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('posts.index'));
+
+        $response->assertOk();
+        $response->assertSee(route('posts.show', $mine), false);
+        $response->assertSee(route('posts.show', $others), false);
+        $response->assertSee(route('posts.edit', $mine), false);
+        $response->assertSee('action="'.route('posts.destroy', $mine).'"', false);
+        $response->assertDontSee(route('posts.edit', $others), false);
+        $response->assertDontSee('action="'.route('posts.destroy', $others).'"', false);
+    }
 }
