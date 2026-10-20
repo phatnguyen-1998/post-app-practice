@@ -25,14 +25,14 @@ Tutorial 13〜15 の題材となる小さな Laravel 10 の投稿アプリ（pos
 ## アーキテクチャ
 
 - **認証は Laravel Fortify。** ログイン・登録のルートは Fortify が自動で登録するため `routes/web.php` には出てこない。画面は `FortifyServiceProvider` で `auth.login` / `auth.register` ビューに結びつけ、ユーザー作成は `app/Actions/Fortify/CreateNewUser.php`。ログイン後の遷移先は `/posts`（`config/fortify.php` の `home` と `RouteServiceProvider::HOME`）。
-- **投稿のルートは `auth` ミドルウェアのグループ内**（一覧・編集・更新・削除のみ。新規作成と詳細画面はまだない）。
-- **認可は `PostPolicy`。** 投稿者本人だけが update / delete できる。`PostController` は各アクションで `$this->authorize()` を呼び、ビューでは同じポリシーで編集・削除ボタンを出し分ける。他人の投稿の URL を直接開くと 403。
+- **投稿のルートは `auth` ミドルウェアのグループ内**（一覧・詳細・編集・更新・削除。新規作成はまだない）。リプライ（`ReplyController`）の投稿・削除も同じグループ内。
+- **認可は `PostPolicy` と `ReplyPolicy`。** 投稿者本人だけが update / delete できる（リプライは delete のみ）。`PostController` は各アクションで `$this->authorize()` を呼び、ビューでは同じポリシーで編集・削除ボタンを出し分ける。他人の投稿の URL を直接開くと 403。
 - **バリデーションはコントローラー内の `$request->validate()`**（FormRequest は未使用）。
-- **データ:** `User` 1—多 `Post` 多—1 `Category`。一覧は `Post::with(['user', 'category'])->latest()` で N+1 を避けている。
+- **データ:** `User` 1—多 `Post` 多—1 `Category`、`Post` 1—多 `Reply` 多—1 `User`（ポストを消すとリプライも消える）。一覧は `Post::with(['user', 'category'])->latest()` で N+1 を避けている。
 
 ## シードデータ
 
-`database/seeders/DatabaseSeeder.php` にカテゴリ3件、ユーザー8人、投稿26件。検証用アカウント `usera@example.com` / `userb@example.com`（パスワード `password`）のメールとパスワードは変えない。投稿は古い順に配列で並べ、`created_at` を「現在から何時間前か」で固定している。新しい投稿を足すときはこの順番を守る。README のシード説明（2人・4件）は古いままになっている。
+`database/seeders/DatabaseSeeder.php` にカテゴリ3件、ユーザー8人、投稿26件、リプライ10件。検証用アカウント `usera@example.com` / `userb@example.com`（パスワード `password`）のメールとパスワードは変えない。投稿は古い順に配列で並べ、`created_at` を「現在から何時間前か」で固定している。新しい投稿を足すときはこの順番を守る。README のシード説明（2人・4件）は古いままになっている。
 
 ## ドキュメント用のフォルダ
 
