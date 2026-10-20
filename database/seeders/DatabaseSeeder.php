@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\Reply;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -67,11 +68,36 @@ class DatabaseSeeder extends Seeder
             [$sota, $etc, '休憩宣言', '2時間集中したのでアイス食べます。溶ける前に食べ切るまでが休憩です。', 1],
         ];
 
+        $created = [];
         foreach ($posts as [$user, $category, $title, $content, $hoursAgo]) {
-            Post::create([
+            $created[$title] = Post::create([
                 'user_id' => $user->id,
                 'category_id' => $category->id,
                 'title' => $title,
+                'content' => $content,
+                'created_at' => now()->subHours($hoursAgo),
+                'updated_at' => now()->subHours($hoursAgo),
+            ]);
+        }
+
+        // リプライ（ポストと同じく古い順に定義し、created_at は現在からの経過時間で固定する）
+        $replies = [
+            ['はじめまして', $daichi, 'ようこそ！これからの投稿、楽しみにしています。', 190],
+            ['はじめまして', $mio, 'よろしくお願いします。ゆるく続けていきましょう。', 182],
+            ['はじめまして', $haruka, 'ありがとうございます。気軽に絡んでください。', 175],
+            ['バリデーションの置き場所', $daichi, '画面が増えて同じルールを使い回し始めたら分ける、でいいと思う。', 130],
+            ['バリデーションの置き場所', $haruka, 'なるほど、その目安でいってみます。', 125],
+            ['ポリシーを書いた', $haruka, '「誰が何をできるか」が1か所にあると、あとで見返しやすいよね。', 60],
+            ['ポリシーを書いた', $daichi, 'ビュー側も @can で揃えると、ボタンの出し分けも迷わない。', 55],
+            ['ポリシーを書いた', $kento, 'ふたりともありがとう。次はリプライにも同じ考え方を使ってみる。', 50],
+            ['勉強会やります', $haruka, '参加したいです！時間は何時からですか？', 40],
+            ['勉強会やります', $daichi, '20時からの予定です。お待ちしています。', 38],
+        ];
+
+        foreach ($replies as [$title, $user, $content, $hoursAgo]) {
+            Reply::create([
+                'user_id' => $user->id,
+                'post_id' => $created[$title]->id,
                 'content' => $content,
                 'created_at' => now()->subHours($hoursAgo),
                 'updated_at' => now()->subHours($hoursAgo),
