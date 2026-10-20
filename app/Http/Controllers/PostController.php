@@ -29,7 +29,9 @@ class PostController extends Controller
 
         $categories = Category::orderBy('id')->get();
 
-        return view('posts.edit', compact('post', 'categories'));
+        $limit = Post::CONTENT_MAX_LENGTH;
+
+        return view('posts.edit', compact('post', 'categories', 'limit'));
     }
 
     public function update(Request $request, Post $post)
@@ -38,7 +40,7 @@ class PostController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'content' => 'required|string|max:140',
+            'content' => 'required|string|max:'.Post::CONTENT_MAX_LENGTH,
             'category_id' => 'required|exists:categories,id',
         ], [
             'content.required' => '本文を入力してください。',

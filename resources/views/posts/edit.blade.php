@@ -27,6 +27,8 @@
         .btn-secondary { background: #FFFFFF; color: #0F1419; border: 1px solid #D3D9DE; }
         .btn-secondary:hover { background: #F7F8F9; }
         .btn:focus-visible { outline: 2px solid #E8792B; outline-offset: 2px; }
+        .counter { text-align: right; color: #5B6570; font-size: 0.8rem; margin-top: 0.3rem; font-variant-numeric: tabular-nums; }
+        .counter.over { color: #D6402C; font-weight: 700; }
         .error { color: #D6402C; font-size: 0.83rem; margin-top: 0.3rem; }
     </style>
 </head>
@@ -66,7 +68,12 @@
 
                 <div class="form-group">
                     <label for="content">本文</label>
-                    <textarea id="content" name="content" required>{{ old('content', $post->content) }}</textarea>
+                    <textarea id="content" name="content" aria-describedby="content-counter" required>{{ old('content', $post->content) }}</textarea>
+                    @php
+                        // 送信時は改行が CRLF（2文字）になりサーバーもそう数えるので、表示も同じ数え方にする
+                        $remaining = $limit - mb_strlen(preg_replace('/\r?\n/', "\r\n", old('content', $post->content)));
+                    @endphp
+                    <p id="content-counter" class="counter @if($remaining < 0) over @endif" data-limit="{{ $limit }}">{{ $remaining >= 0 ? "残り {$remaining} 文字" : abs($remaining).' 文字オーバー' }}</p>
                     @error('content')
                         <p class="error">{{ $message }}</p>
                     @enderror
@@ -79,5 +86,21 @@
             </form>
         </main>
     </div>
+
+    <script>
+        const textarea = document.getElementById('content');
+        const counter = document.getElementById('content-counter');
+        const limit = Number(counter.dataset.limit);
+
+        function updateCounter() {
+            // 送信時は改行が CRLF（2文字）になりサーバーもそう数えるので、表示も同じ数え方にする
+            const remaining = limit - Array.from(textarea.value.replace(/\r?\n/g, '\r\n')).length;
+            counter.textContent = remaining >= 0 ? `残り ${remaining} 文字` : `${-remaining} 文字オーバー`;
+            counter.classList.toggle('over', remaining < 0);
+        }
+
+        textarea.addEventListener('input', updateCounter);
+        updateCounter();
+    </script>
 </body>
 </html>
