@@ -1,3 +1,5 @@
+> この設計書は、この機能を実装した時点の記録です。このあとは更新していません。
+
 # リプライ機能 設計書
 
 Issue: [#1 リプライ機能を追加する](https://github.com/phatnguyen-1998/post-app-practice/issues/1)
